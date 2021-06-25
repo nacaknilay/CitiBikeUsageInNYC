@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Citi Bike Usage in NYC</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Espresso" />
+    <script src="libs/header-attrs-2.9/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <script src="libs/htmlwidgets-1.5.3/htmlwidgets.js"></script>
+    <script src="libs/jquery-1.12.4/jquery.min.js"></script>
+    <link href="libs/leaflet-1.3.1/leaflet.css" rel="stylesheet" />
+    <script src="libs/leaflet-1.3.1/leaflet.js"></script>
+    <link href="libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet" />
+    <script src="libs/proj4-2.6.2/proj4.min.js"></script>
+    <script src="libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
+    <link href="libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet" />
+    <script src="libs/leaflet-binding-2.0.4.1/leaflet.js"></script>
+    <script src="libs/leaflet-providers-1.9.0/leaflet-providers_1.9.0.js"></script>
+    <script src="libs/leaflet-providers-plugin-2.0.4.1/leaflet-providers-plugin.js"></script>
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Citi Bike Usage in NYC
+### Espresso
+### 21 06 2021
+
+---
+
+
+
+# MAT381E
+
+# PROJECT REPORT
+
+# Team Espresso
+
+- Oğuzhan Seleker
+
+- Nilay Nacak
+
+- Betül Kul
+
+
+
+---
+# PROJECT INTRODUCTION
+
+  + 2020 Covid-19 Pandemic has changed the habits and social behaviors of society in many ways. Cycling, the healthiest way of travel, is among the industries that was affected by the Covid-19 lock down.         
+During the pandemic, social distancing was promoted throughout the world, especially in major cities such as New York.         
+  + Visualizing the rental bike usage retrieved from Citi Bike database will enable the analysis of the effects of pandemic and lock down for the bike industry.           
+  + It is also possible to make deductions about the user base depending on the change in the average age of the users over time, observe how the speed of cycling changes according to age groups, have information about the gender of the people who cycle frequently. In addition, mapping the most occupied and popular bike destinations of the city based on the inferences about the frequencies of stations.          
+  
+---
+# CITI BIKE INTRODUCTION
+
+* New York City’s bike share system, Citi Bike is the largest system in the USA and an essential part of the city’s transportation network.         
+* Citi Bike consists of 20,000 bikes that are locked into a network of docking stations throughout the city and 1,300 stations across Manhattan, Brooklyn, Queens, the Bronx and Jersey City.                  
+* The bikes can be unlocked from one station and returned to any other station in the system, making them ideal for one-way trips.          
+* People use bike share to commute to work or school, run errands, get to appointments or social engagements, and more.                
+
+
+&gt; ** How its used? ** 
+
+ Citi Bike is available for use 24 hours/day, 7 days/week, 365 days/year. Customers either become an Annual Member or buy a short-term pass through the Citi Bike app. Then it is possible to find an available bike nearby, and  get a ride code or use your member key to unlock it. There is no limit for taking any rides once your pass or membership is active. The customer can return the rented bike to any station, and wait for the green light on the dock to make sure it's locked.               
+
+
+---
+# PROJECT AIM
+
+## The CitiBike NYC Project aim : 
+
+* To analyze Citi Bike users according to the personal information such as gender, age and customer type and gain a better unsterstanding of the target customer profile of Citi Bike.
+
+* To analyze the demografic nature of the with the calculation of the busiest bus stations. 
+
+* To show how people's bicycle usage was affected after the COVID-19 pandemic was announced.
+
+---
+
+# New York Covid-19 Pandemic
+
+
+  * The first case of COVID-19 in the USA, New York during the pandemic was confirmed on March 1, 2020. 
+  
+  * The state quickly became an epicenter of the pandemic.
+  
+  * New York had the highest number of confirmed cases of any state from the start of U.S. outbreak until July 22. 
+  
+  * Approximately half of the state's cases have been in New York City, where nearly half the state's population lives.
+
+
+---
+### DATA SOURCE
+
+  Citi Bike has an immense transportation data that is harvested from the Citi Bike app. Their database is updated with thousand of new logs every single day. The large amounts of data is collected according to the NYCBS Data Use Policy by the company and is open to public on the company website. The bike sharing service has invited  developers, engineers, statisticians, artists, academics to analyse, visualize and manipulate the NYC bike share data without any consequence.
+  
+  **LINK TO DATA**
+  
+[https://s3.amazonaws.com/tripdata/index.html](https://s3.amazonaws.com/tripdata/index.html)
+
+---
+## TIDYING THE PROJECT DATA 
+
+Citi bike shares the application data in the format of .csv month by month. So, in order to examine from January 2020 to May 2021, it was necessary to combine the monthly .csv files into a single .csv file.
+
+1-) For this, press Windows+R keys respectively. Type cmd in the Run window that opens. On the terminal screen that opens,  to the directory where our .csv files are located.
+
+![](combinecsv1.png)
+---
+2-) Copy the directory; example: **" C:\Users\PcName\Desktop\Espresso\bikeDataCsv" ** and paste the "C:\Users\PcName\Desktop\Espresso\bikeDataCsv" onto the command line, then press enter.
+
+![](combinecsv2.png)
+![](combinecsv3.png)
+---
+3-) After going to the directory, write  "copy *.csv all_data.csv" onto the command line,then press Enter.
+![](combinecsv4.png)
+![](combinecsv5.png)
+---
+
+4-) Find the new “all_data.csv” file under the directory that it was created.
+![](combinecsv6.png)
+---
+
+## ABOUT THE PROJECT DATA
+
+
+
+The data frame is made out of **353176 lines** and **15 columns** that are type "character" .This means that the NYC Bike Usage Data will analyze more than 350k bike rides.
+
+
+### The contents of the NYC Citi Bike Data :      
+
+•	Trip Duration (seconds)   
+•	Start Time and Date    
+•	Stop Time and Date   
+•	Start Station Name   
+•	End Station Name    
+•	Station ID    
+•	Station Lat/Long   
+•	Bike ID    
+•	User Type (Customer = 24-hour pass or 3-day pass user; Subscriber = Annual Member)    
+•	Gender (Zero=unknown; 1=male; 2=female)    
+•	Year of Birth    
+
+---
+### Plotting the Age Distribution of Citi Bikers
+- The project data **"all_data"** is stored as the variable name **"citi"** with read.csv() function of R.
+- Birth Year column of the citi is _character_ type. So in order to calculate the age of the customers, we turn it to numeric value using the as.numeric function.
+
+```r
+library(ggplot2)
+library(dplyr)
+library(ggthemes)
+citi &lt;- read.csv("all_data.csv")
+citi$birth.year &lt;- as.numeric(citi$birth.year)
+citi$age &lt;- 2021-citi$birth.year
+  citi %&gt;% ggplot(aes(x=age)) + geom_density()+theme_fivethirtyeight()+
+  theme(axis.text.y=element_blank())+ggtitle("Age Distribution of Citi Bikers")+
+  geom_vline(xintercept=median(citi$age,na.rm=T),linetype="dashed",col="dark grey")
+```
+---
+## Results of the Age Distribution of Citi Bikers Plot
+
+&lt;img src="project_final_espresso_files/figure-html/unnamed-chunk-3-1.png" width="55%" height="100%" style="display: block; margin: auto;" /&gt;
+
+  &gt; Average Citi Bike user age is close to 40. According to the graph ages between 50-55 are among the most frequently bike rented age interval. It is also easy to see that ages from 30 to 35 prefer Citi Bike more than others.
+  
+---
+### Plotting Age Groups of Citi Bikers
+
+  &gt; After creating an age column for **citi** , we created the age groups starting from 20 to 90 labeled as 'under 20s' to '90s' seperated by decade.
+
+
+```r
+library(ggplot2)
+library(dplyr)
+library(ggthemes)
+citi &lt;- read.csv("all_data.csv")
+citi$birth.year &lt;- as.numeric(citi$birth.year)
+citi$age &lt;- 2021-citi$birth.year
+citi$age_group &lt;- cut(citi$age,breaks=c(0,20,30,40,50,60,70,80,90),labels=c("under 20s","20s","30s","40s","50s","60s","70s","over 80"))
+citi %&gt;% ggplot(aes(x=age_group,fill=age_group)) + geom_bar(alpha=.8)+
+  theme_fivethirtyeight()+scale_fill_brewer(palette="Set2")+
+  theme(legend.position="false")+ggtitle(expression(atop("Distribution by Age Group")))+
+  scale_y_continuous(labels=comma)
+```
+
+---
+##### Results of Age Groups of Citi Bikers Plot
+
+&lt;img src="project_final_espresso_files/figure-html/unnamed-chunk-5-1.png" width="50%" height="100%" style="display: block; margin: auto;" /&gt;
+
+&gt; Citi Bike has customer from every age group up until the 70s. People who are in their 30s are the most frequent Citi Bike users of NYC. People in their 50s and 20s have a similar user base around 80k.
+
+---
+## Plotting Gender Distribution of Citi Bikers
+
+* The gender value of the **citi** data frame consists three values from 0 to 2. 
+* In order to prepare the data for plotting, using ifelse statament the values are changed according to their equivalent string values.
+
+
+```r
+library(ggplot2)
+library(dplyr)
+library(ggthemes)
+citi &lt;- read.csv("all_data.csv")
+
+citi$gender &lt;- ifelse(citi$gender==1,"Male",ifelse(citi$gender==2,"Female","Unknown"))
+
+ citi %&gt;% ggplot(aes(x=gender,fill=gender)) + geom_bar(alpha=.8) +
+  theme_fivethirtyeight() + scale_fill_brewer(palette="Set2")+
+  theme(legend.position="none")+ggtitle(expression(atop("Gender of Citi Bikers")))+scale_y_continuous(labels=comma)
+```
+
+---
+### Results of Gender Distribution Plot
+
+&lt;img src="project_final_espresso_files/figure-html/unnamed-chunk-7-1.png" width="50%" height="100%" style="display: block; margin: auto;" /&gt;
+&gt; Male users create most of the Citi Biker base , more than twice of the female bikers.  Some of the logs do'nt have gender information because they are not subscribers.
+
+---
+### Mapping the Station Frequencies Based on Starting Points
+
+&gt; Station are grouped according to their id's using **group_by** function, then added station informations; latitude, longitude, name and trip count(n). 
+
+
+```r
+library(ggplot2)
+library(dplyr)
+library(scales)
+library(htmlwidgets)
+library(leaflet)
+
+station.info &lt;- citi %&gt;%
+  group_by(start.station.id) %&gt;%
+  summarise(lat=as.numeric(start.station.latitude[1]),
+            long=as.numeric(start.station.longitude[1]),
+            name=start.station.name[1],
+            n.trips=n())
+mybins &lt;- seq(0, 60000, by=10000)
+mypalette &lt;- colorBin( palette="YlOrBr", domain=station.info$n.trips , na.color="transparent", bins=mybins)
+```
+
+---
+### Mapping the Station Frequencies Based on Starting Points
+
+* Map Tooltip
+
+&gt; The tooltip enables viewing station information when hovered on the map.
+
+
+```r
+mytext &lt;- paste(
+  "Frequency: ", station.info$n.trips, "&lt;br/&gt;", 
+  "StationName: ", station.info$name, "&lt;br/&gt;", 
+  "StationId: ", station.info$start.station.id, sep="") %&gt;%
+  lapply(htmltools::HTML)
+```
+
+---
+### Mapping the Station Frequencies Based on Starting Points
+
+* Creating &amp; Saving the Map
+
+&gt; "Esri.WordlImagery" provides world map and zoom on the NYC province. Then using addCircleMarkers, station nlocations are marked with circles according to usage frequence.
+
+
+```r
+m &lt;- leaflet(stationNumber) %&gt;% 
+  addTiles()  %&gt;% 
+  setView( lat=40.73, lng = -74.04 , zoom=13) %&gt;%
+  addProviderTiles("Esri.WorldImagery") %&gt;%
+  addCircleMarkers(~long, ~lat, 
+                   fillColor = ~mypalette(n.trips), fillOpacity = 0.7, color="white", radius=8, stroke=FALSE,
+                   label = mytext,
+                   labelOptions = labelOptions( style = list("font-weight" = "normal", padding = "3px 8px"), textsize = "13px", direction = "auto")
+  ) %&gt;%
+  addLegend( pal=mypalette, values=~n.trips, opacity=0.9, title = "Frequency", position = "bottomright" )
+saveWidget(m, file=paste0( getwd(), "/StationMapping.html"))
+```
+
+---
+
+##### Results of the Station Frequencies Based on Starting Points Map
+
+<div id="htmlwidget-924886f970edca31578e" style="width:504px;height:60%;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-924886f970edca31578e">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addProviderTiles","args":["Esri.WorldImagery",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]},{"method":"addCircleMarkers","args":[[40.7141454,40.7177325,40.7195861164717,40.7211236,40.7182113,40.7112423,40.7246050998869,40.7253399253558,40.7308970978618,40.7443187,40.7487159453802,40.7287448,40.737711,40.7272235,40.727595966,40.7165397809919,40.7311689,40.7376037,40.7241765,40.742677141,40.72152515,40.734785818,40.71848892,40.7127742,40.7349610200095,40.7236589,40.7124188237569,40.7134638266919,40.7260117296463,40.7252891078113,40.7233315864644,40.72165072488,40.7183551982321,40.7145840353589,40.7143583687043,40.725685483629,40.7216301426384,40.719282200707,40.7459099663156,40.7096508336406,40.71649,40.71942,40.7242941,40.7192517,40.73367,40.7275514673001,40.7257261374256,40.722103786686,40.7151776773203,40.71113,40.7352083804536,40.71687,null],[-74.0335519,-74.043845,-74.0431174635887,-74.03805095,-74.0836394,-74.0557013,-74.0784059464931,-74.0676221251488,-74.0639126300812,-74.0439909,-74.0404433012009,-74.0321082,-74.066921,-74.0337589,-74.044247311,-74.0496379137039,-74.0575736,-74.0524783,-74.0506564,-74.051788633,-74.046304543,-74.050443636,-74.047726625,-74.0364857,-74.0595030784607,-74.0641943,-74.0385255217552,-74.0628585219383,-74.0503889322281,-74.0455716848373,-74.0459525585174,-74.0428841114044,-74.0389144420624,-74.042817056179,-74.0666109323502,-74.0487903356552,-74.0499678254128,-74.071261882782,-74.0572714805603,-74.0686011314392,-74.04105,-74.05099,-74.0354826,-74.034234,-74.0625,-74.0710607171059,-74.0719592571259,-74.0714550018311,-74.0376833081245,-74.0789,-74.0469637513161,-74.03281,null],8,null,null,{"interactive":true,"className":"","stroke":false,"color":"white","weight":5,"opacity":0.5,"fill":true,"fillColor":["#FFFFD4","#FEE391","#FEC44F","#FFFFD4","#FFFFD4","#FEE391","#FFFFD4","#FFFFD4","#FEE391","#FFFFD4","#FFFFD4","#FEC44F","#FFFFD4","#FEE391","#FEE391","#FEE391","#FFFFD4","#FFFFD4","#FFFFD4","#FFFFD4","#FFFFD4","#FFFFD4","#FFFFD4","#FFFFD4","#FFFFD4","#FFFFD4","#FFFFD4","#FFFFD4","#FFFFD4","#FFFFD4","#FFFFD4","#FFFFD4","#FFFFD4","#FEE391","#FFFFD4","#FFFFD4","#FFFFD4","#FFFFD4","#FFFFD4","#FFFFD4","#FFFFD4","#FFFFD4","#FFFFD4","#FEE391","#FFFFD4","#FFFFD4","#FFFFD4","#FFFFD4","#FFFFD4","#FFFFD4","#FFFFD4","#FEE391","#FFFFD4"],"fillOpacity":0.7},null,null,null,null,["Frequency: 8372<br/>StationName: Paulus Hook<br/>StationId: 3184","Frequency: 10152<br/>StationName: City Hall<br/>StationId: 3185","Frequency: 24123<br/>StationName: Grove St PATH<br/>StationId: 3186","Frequency: 9765<br/>StationName: Warren St<br/>StationId: 3187","Frequency: 1656<br/>StationName: Union St<br/>StationId: 3191","Frequency: 17438<br/>StationName: Liberty Light Rail<br/>StationId: 3192","Frequency: 5494<br/>StationName: Lincoln Park<br/>StationId: 3193","Frequency: 6078<br/>StationName: McGinley Square<br/>StationId: 3194","Frequency: 14521<br/>StationName: Sip Ave<br/>StationId: 3195","Frequency: 2017<br/>StationName: Riverview Park<br/>StationId: 3196","Frequency: 3275<br/>StationName: Heights Elevator<br/>StationId: 3198","Frequency: 20697<br/>StationName: Newport Pkwy<br/>StationId: 3199","Frequency: 1709<br/>StationName: Dey St<br/>StationId: 3201","Frequency: 13536<br/>StationName: Newport PATH<br/>StationId: 3202","Frequency: 15513<br/>StationName: Hamilton Park<br/>StationId: 3203","Frequency: 11286<br/>StationName: JC Medical Center<br/>StationId: 3205","Frequency: 3441<br/>StationName: Hilltop<br/>StationId: 3206","Frequency: 2512<br/>StationName: Oakland Ave<br/>StationId: 3207","Frequency: 5813<br/>StationName: Brunswick St<br/>StationId: 3209","Frequency: 3574<br/>StationName: Pershing Field<br/>StationId: 3210","Frequency: 8207<br/>StationName: Newark Ave<br/>StationId: 3211","Frequency: 1756<br/>StationName: Christ Hospital<br/>StationId: 3212","Frequency: 7626<br/>StationName: Van Vorst Park<br/>StationId: 3213","Frequency: 4640<br/>StationName: Essex Light Rail<br/>StationId: 3214","Frequency: 1841<br/>StationName: 5 Corners Library<br/>StationId: 3220","Frequency: 5146<br/>StationName: Baldwin at Montgomery<br/>StationId: 3225","Frequency: 9569<br/>StationName: Morris Canal<br/>StationId: 3267","Frequency: 3766<br/>StationName: Lafayette Park<br/>StationId: 3268","Frequency: 5794<br/>StationName: Brunswick & 6th<br/>StationId: 3269","Frequency: 5698<br/>StationName: Jersey & 6th St<br/>StationId: 3270","Frequency: 6405<br/>StationName: Jersey & 3rd<br/>StationId: 3272","Frequency: 5616<br/>StationName: Manila & 1st<br/>StationId: 3273","Frequency: 7629<br/>StationName: Columbus Drive<br/>StationId: 3275","Frequency: 14328<br/>StationName: Marin Light Rail<br/>StationId: 3276","Frequency: 2380<br/>StationName: Communipaw & Berry Lane<br/>StationId: 3277","Frequency: 4839<br/>StationName: Monmouth and 6th<br/>StationId: 3278","Frequency: 4945<br/>StationName: Dixon Mills<br/>StationId: 3279","Frequency: 3739<br/>StationName: Astor Place<br/>StationId: 3280","Frequency: 1182<br/>StationName: Leonard Gordon Park<br/>StationId: 3281","Frequency: 1<br/>StationName: JCBS Depot<br/>StationId: 3426","Frequency: 3449<br/>StationName: York St<br/>StationId: 3481","Frequency: 4256<br/>StationName: Montgomery St<br/>StationId: 3483","Frequency: 9216<br/>StationName: Washington St<br/>StationId: 3638","Frequency: 13312<br/>StationName: Harborside<br/>StationId: 3639","Frequency: 3194<br/>StationName: Journal Square<br/>StationId: 3640","Frequency: 2104<br/>StationName: Glenwood Ave<br/>StationId: 3677","Frequency: 3635<br/>StationName: Fairmount Ave<br/>StationId: 3678","Frequency: 3709<br/>StationName: Bergen Ave<br/>StationId: 3679","Frequency: 5505<br/>StationName: Grand St<br/>StationId: 3681","Frequency: 1550<br/>StationName: Jackson Square<br/>StationId: 3694","Frequency: 4130<br/>StationName: Hoboken Ave at Monmouth St<br/>StationId: 3791","Frequency: 13024<br/>StationName: Columbus Dr at Exchange Pl<br/>StationId: 3792","Frequency: 13<br/>StationName: start station name<br/>StationId: start station id"],{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"13px","textOnly":false,"style":{"font-weight":"normal","padding":"3px 8px"},"className":"","sticky":true},null]},{"method":"addLegend","args":[{"colors":["#FFFFD4","#FEE391","#FEC44F","#FE9929","#D95F0E","#993404"],"labels":["0 &ndash; 10,000","10,000 &ndash; 20,000","20,000 &ndash; 30,000","30,000 &ndash; 40,000","40,000 &ndash; 50,000","50,000 &ndash; 60,000"],"na_color":null,"na_label":"NA","opacity":0.9,"position":"bottomright","type":"bin","title":"Frequency","extra":null,"layerId":null,"className":"info legend","group":null}]}],"setView":[[40.73,-74.04],13,[]],"limits":{"lat":[40.7096508336406,40.7487159453802],"lng":[-74.0836394,-74.0321082]}},"evals":[],"jsHooks":[]}</script>
+
+  The map colors the Citi Bike stations based on the frequency of bike usage on NYC. With hovering over the station locations on the map frequency of bike usage, station name and id is shown.
+
+---
+### Plotting the Average Speed of Age Groups of Citi Bikers
+
+&gt;  In order to calculate speed, using **distHaversine()** function distance taken on every trip is determined. 
+
+
+```r
+library(ggplot2)
+library(ggthemes)
+library(dplyr)
+library(scales)
+library(ggmap)
+library(geosphere)
+
+citi &lt;- read.csv("all_data.csv")
+citi$birth.year &lt;- as.numeric(citi$birth.year)
+citi$age &lt;- 2021-citi$birth.year
+citi$age_group &lt;- cut(citi$age,breaks=c(0,30,40,50,60,70,80,100),labels=c("under 30","30s","40s","50s","60s","70s","over 80"))
+citi$start.station.latitude &lt;- as.numeric(citi$start.station.latitude)
+citi$start.station.longitude &lt;- as.numeric(citi$start.station.longitude)
+citi$end.station.latitude &lt;- as.numeric(citi$end.station.latitude)
+citi$end.station.longitude &lt;- as.numeric(citi$end.station.longitude)
+citi$Distance &lt;- distHaversine(citi[,6:7], citi[,10:11])
+```
+
+---
+### Plotting the Average Speed of Age Groups of Citi Bikers
+* Calculating Speed 
+
+&gt; Since trip duration is type 'character', in order to parse it to integer, **as.integer** function is used. Then average speed is calculated by dividing distance to duration. Then speed unit is turned into km/h.
+
+
+```r
+#m/s
+citi$tripduration &lt;- as.integer(citi$tripduration)
+citi$avg_speed &lt;- citi$Distance / citi$tripduration
+
+#converted m/s to km/h
+citi$avg_speed &lt;- citi$avg_speed * 36 / 10
+```
+---
+### Plotting the Average Speed of Age Groups of Citi Bikers
+
+&gt; Some Citi Bike users returned their bike to the same station they departed, therefore distance and speed of these users are equal to zero. By filtering trips with average speed greater than zero, the calculations are corrected.
+&gt; A new data frame is created by taking average speed data grouped by age. 
+&gt; Some Citi Bike users entered illogical birth year informations, thus filtering users older than 80 was necessary.
+
+
+```r
+#filter average speed bigger than 0
+citi &lt;- citi %&gt;% filter(avg_speed &gt; 0)
+
+# average speed group by age group
+average_speed_by_age &lt;- citi %&gt;% group_by(age) %&gt;% summarize(mean_speed = mean(avg_speed))
+
+#filter age smaller than 80
+average_speed_by_age &lt;- average_speed_by_age %&gt;% filter(age &lt; 80)
+line_graph &lt;- ggplot(average_speed_by_age) + geom_line(aes(age, mean_speed), color="red") + theme_classic() + labs(title="Average Speed by Age", x= "Age", y="Average Speed")
+line_graph
+```
+---
+### Results of the Average Speed by Age Plot
+
+&lt;img src="project_final_espresso_files/figure-html/unnamed-chunk-15-1.png" width="50%" height="5%" style="display: block; margin: auto;" /&gt;
+&gt; The graph shows average user speed according to age groups. Average speed is highest on people in their 30s with a huge difference from the others. Other age groups have ups and downs.
+
+---
+###Plotting the Trip Count of Trip Durations
+
+&gt; Trip duration is turned into minutes then count of trips of based on trip durations with five minute time intervals are calculated.
+
+
+```r
+library(ggplot2)
+library(dplyr)
+
+citi &lt;- read.csv("all_data.csv")
+# Trip duration data graph
+citi  &lt;- mutate(citi, tripduration.min = as.numeric(tripduration)/60, na.rm=T)
+x.max &lt;- quantile(citi$tripduration.min, 0.99, na.rm=T)
+ggplot(citi) + geom_histogram(aes(tripduration.min), fill="darkgreen", alpha = 0.4) + 
+  xlim(c(0,x.max)) + theme_classic() + labs(title="Count of Trip Duration", x= "Trip Duration (Minute)", y="Count")
+```
+
+---
+### Results of the Trip Count of Trip Durations Plot
+
+&lt;img src="project_final_espresso_files/figure-html/unnamed-chunk-17-1.png" width="50%" height="10%" style="display: block; margin: auto;" /&gt;
+&gt; Most Citi Bike rides last 0 to 5 minutes.Thus Citi Bike is mostly used for short trips.
+
+---
+### Plotting the Occupency of Weekdays Based on Gender 
+
+&gt; Using the date information from the start time column, which day of the week the trip was made is determined. 
+
+
+```r
+library(ggplot2)
+library(dplyr)
+library(lubridate)
+
+citi &lt;- read.csv("all_data.csv")
+citi$gender &lt;- ifelse(citi$gender==1,"Male",ifelse(citi$gender==2,"Female","Unknown"))
+citi$weekday &lt;- wday(as.Date(citi$starttime), label=TRUE,)
+ggplot(citi) + geom_bar(aes(x=weekday, fill=gender)) + theme_bw() + ylab("") + 
+  labs(title="The Number of Daily Citibike Ride", x= "Days of Week", y="Count")
+```
+
+---
+### Results of the Occupency of Weekdays Based on Gender Plot
+
+&lt;img src="project_final_espresso_files/figure-html/unnamed-chunk-19-1.png" width="50%" height="100%" style="display: block; margin: auto;" /&gt;
+&gt; The number of daily citi bike ride graph shows that rental bike usage is higher on weekends according to the weekdays. It is possible to conclude that male riders are more than female users for every day of the week.
+
+---
+### Plotting the Effects of Pandemic
+* After the Pandemic was Announced
+
+&gt; Taking the rides made within the two months time period, from March 1 to May 1, after pandemic was first announced, 'CitiPandemic' data frame is created.
+
+
+```r
+library(ggplot2)
+library(dplyr)
+library(lubridate)
+
+citi &lt;- read.csv("all_data.csv")
+CitiPandemic &lt;- subset(citi,(starttime &gt;= "2020-03-01" &amp; starttime &lt;= "2020-04-31"), select=c(starttime))
+ggplot(CitiPandemic) + geom_bar(aes(x=as.Date(starttime)),fill="darkgreen") + theme_bw() + ylab("") +
+  labs(title="The Time The Pandemic Was Declared", x= "March - April 2020", y=" Count of Trip ", subtitle = "The first case of the COVID-19 pandemic in New York City was confirmed \n in New York City in March 2020")
+```
+
+---
+### Results of the  Effects of Pandemic Plot
+
+&lt;img src="project_final_espresso_files/figure-html/unnamed-chunk-21-1.png" width="50%" height="100%" style="display: block; margin: auto;" /&gt;
+
+&gt; The graph show the daily Citi Bike Counts between March 1 of to May 1. After a short time when the Covid-19 pandemic confirmed in NYC, the Citi Bike usage in the city decreased immensely. 
+
+---
+
+### Plotting the Effects of Pandemic
+* From the Start of Pandemic to Today
+
+&gt; In order to see the general effect of pandemic to Citi Bike rides, times period is extended to May 31.
+
+
+```r
+library(ggplot2)
+library(dplyr)
+library(lubridate)
+
+citi &lt;- read.csv("all_data.csv")
+
+CitiAllPandemic &lt;- subset(citi,(starttime &gt;= "2020-03-01" &amp; starttime &lt;= "2021-05-31"), select=c(starttime))
+ggplot(CitiAllPandemic) + geom_bar(aes(x=as.Date(starttime)),fill="darkblue") + theme_bw() + ylab("") +
+  labs(title="Daily Bike Usage After Covid-19 Pandemic", x= "March - April 2020", y=" Count of Trip ", subtitle = "The Pandemic is continuing since March 1. The vaccination \n started on January 8, 2021 for New Yorkers.")
+```
+
+---
+
+##### Results of the  Effects of Pandemic Plot
+
+&lt;img src="project_final_espresso_files/figure-html/unnamed-chunk-23-1.png" width="50%" height="80%" style="display: block; margin: auto;" /&gt;
+&gt;   It is possible to detect that during 2020 summer, people prefer riding bikes since it enables social distancing. The reason of the sudden increase in ride counts during October 2020 could be explained withe the article linked below. Citi Bike has tripled the number of bikes in their fleet until the end of September and continued to add hundreds of bikes every week until the end of October. 
+[Article](https://brooklyneagle.com/articles/2020/10/16/citi-bikes-ebike-rides-in-2020-reach-1-million/)
+
+---
+
+## Conclusion
+
+&gt;   As a result, in our study, we have seen the change in the prevalence of bicycle use in NYC over time and the effect of the pandemic. At the same time, we observed in the graphs that we produced that gender and age factors have a significant effect on usage.
+&gt;   Although it was observed that bicycle use was affected at the beginning of the pandemic, in conclusion, it is determined that users preferred bicycles again and the number of Citi Bike bicycle rentals increased from time to time.
+&gt;   According to the results and conclusion that was obtained, it could be stated that there will be an increase in the number and use of bicycles in the near future.
+    
+---
+
+## References
+
+Citi Bike’s ebike rides in 2020 reach 1 million, Brooklyn Daily Eagle, 2020. Retrieved from ;
+[https://brooklyneagle.com/articles/2020/10/16/citi-bikes-ebike-rides-in-2020-reach-1-million/](https://brooklyneagle.com/articles/2020/10/16/citi-bikes-ebike-rides-in-2020-reach-1-million/)
+
+Covid-19 Pandemic in New York State, Wikipedia. Retrieved from ;
+[https://en.wikipedia.org/wiki/COVID-19_pandemic_in_New_York_(state)](https://en.wikipedia.org/wiki/COVID-19_pandemic_in_New_York_(state))
+
+Citi Bike How it works?, citi bike. Retrieved from ;
+[https://www.citibikenyc.com/how-it-works](https://www.citibikenyc.com/how-it-works)
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
